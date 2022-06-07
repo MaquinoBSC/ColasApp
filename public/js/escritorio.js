@@ -1,8 +1,9 @@
 //Referencias HTML
-const lblEscritorio= document.querySelector('h1');
-const btnAtender= document.querySelector('button');
-const lblTicket= document.querySelector('small');
-const alert= document.querySelector('.alert');
+const lblEscritorio = document.querySelector('h1');
+const btnAtender    = document.querySelector('button');
+const lblTicket     = document.querySelector('small');
+const alert         = document.querySelector('.alert');
+const lblPendientes = document.querySelector('#lblPendientes');
 
 
 const searchParams= new URLSearchParams( window.location.search );
@@ -30,6 +31,12 @@ socket.on('ultimo-ticket', ( payload )=> {
     // lblNuevoTicket.innerText= 'Ultimo ticket: ' + payload;
 });
 
+socket.on( 'tickets-pendientes', ( payload )=> {
+    if( payload !== 0) alert.style.display= 'none';
+
+    lblPendientes.innerText= payload;
+});
+
 btnAtender.addEventListener( 'click', () => {
     socket.emit('atender-ticket', { escritorio }, ({ ok, ticket, msg })=> {
         if( !ok ){
@@ -39,6 +46,8 @@ btnAtender.addEventListener( 'click', () => {
             return
         }
 
+        alert.innerText= '';
+        alert.style.display= 'none';
         lblTicket.innerHTML= 'Ticket: ' + ticket.numero;
     });
 });
